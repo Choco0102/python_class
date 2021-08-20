@@ -163,13 +163,13 @@ class character:
         self.attack = attack
         self.health = health
         self.speed = speed
-        print(f"{self.name}님 소환사의 협곡에 오신 것을 환영합니다.")
 
     def character_info (self):
+        print(f"{self.name}님 소환사의 협곡에 오신 것을 환영합니다.\n")
         print(f"[{self.name}]")
         print(f"기본 공격력: {self.attack}")
         print(f"기본 체력: {self.health}")
-        print(f"기본 속도: {self.speed}")
+        print(f"기본 속도: {self.speed}\n")
 
 leesin = character("리신", 70, 575, 345)
 renekton = character("레넥톤", 71, 600, 345)
