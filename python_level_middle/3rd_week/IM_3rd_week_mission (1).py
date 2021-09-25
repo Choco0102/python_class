@@ -121,7 +121,7 @@ btn.pack()
 win.mainloop()
 '''
 ## Tkinter 위젯: Text() - 연습문제: Text 위젯 생성하기
-'''
+
 from tkinter import *
 
 win = Tk()
@@ -132,7 +132,7 @@ T.pack()
 T.insert(1.0, "텍스트 위젯 연습문제 \n Hello world! \n 지금 생각나는 문장을 입력해봅시다 :D")
 
 win.mainloop()
-'''
+
 ## Tkinter 위젯: Canvas() - Canvas 생성하기 & 여러가지 도형 그리기
 
 
