@@ -1,4 +1,4 @@
-# python 중급반 6주차 정규수업(10:00~12:00) mission
+# python 중급반 7주차 정규수업(10:00~12:00) mission
 '''
 [수업을 시작하기 전에!]
 1. 카카오톡 질문 단체톡방 ON!
@@ -7,10 +7,9 @@
 4. Pycharm 수업 코드 다운로드 받아 열어두기
 5. 수업시간 집중!!
 
-[중급반 5주차 복습]
-1. Sprite class 완성
-2. 충돌 판정 조건 mission 진행
-3. StarshipSprite 완성
+[중급반 7주차 복습]
+1. AlienSprite 완성
+2. 유스해커톤 및 시험 수고했어요 :D
 '''
 
 
@@ -108,14 +107,13 @@ class StarShipSprite(Sprite):
 
     # 우주선을 움직이는 메서드. (윈도우 경계를 넘으려고 할 경우, 움직이지 못하게 할 것)
     def move(self):
-        # 윈도우 경계를 넘지 못하도록 설정
-        if ((self.dx < 0 and self.x < 10) or (self.dx > 0 and self.x > 725)):
+        if (((self.dx < 0) and (self.x <10)) or ((self.dx > 0) and (self.x > 725))):
             return
-        if ((self.dy < 0 and self.y < 10) or (self.dy > 0 and self.y > 525)):
+        if ((self.dy > 0) and (self.y > 525) or ((self.dy < 0) and (self.y < 10))):
             return
-        super().move()  # 상속
-        self.dx = 0  # dx 설정
-        self.dy = 0  # dy 설정
+        super().move()
+        self.dx = 0
+        self.dy = 0
 
     # 충돌을 처리한다. 외계인 우주선과 충돌하면 게임이 종료되도록 한다.
     def handleCollision(self, other):
@@ -128,75 +126,77 @@ class StarShipSprite(Sprite):
 # class AlienSprite
 # : 외계인 우주선을 나타내는 클래스
 class AlienSprite(Sprite):
-    def __init__(self,game, image, x, y):
-        super() .__init__(image, x, y)      # 상속
-        self.game = game                    # game
-        self.dx = -10                       # dx 설정
+    def __init__(self, game, image, x, y):
+        super().__init__(image, x, y)   # 상속
+        self.game = game                # game
+        self.dx = -10                   # dx 설정
 
     # 외계인 우주선을 움직이는 메소드(윈도우의 경계에 도달하면 한 칸 아래로 이동한다.)
     def move(self):
-        if ((self.dx<0 and self.dx<10) or (self.dx>0 and self.dx>750)):
-            self.dx = -self.dx              # dx 변경
-            self.y += 50                    # y 변경
-            if self.y>600:                  # y>600일 경우, GameOver
+        if ((self.dx<0 and self.x<10) or (self.dx>0 and self.x>750)):
+            self.dx = -self.dx      # dx 변경
+            self.y += 50            # y 변경
+            if self.y>600:          # y>600일 경우, GameOver
                 self.game.endGame()
-    super().move()                                        # move 상속
+        super().move()              # move 상속
 
 
-'''
 # class ShotSprite
 # : 포탄을 나타내는 클래스
 class ShotSprite():
-    def __init__(self, , , , ):
-        # 상속
-        # game
-        # dy 초기화
+    def __init__(self,game, image ,x ,y):
+        super().__init__ (image, x, y)      # 상속
+        self.game = game                    # game
+        self.dy = -20                       # dy 초기화
 
     # 화면을 벗어나면 객체를 리스트에서 삭제한다.
     def move(self):
-        # move 상속
-        # 포탄이 화면을 벗어날 경우(y<-50) Sprite 삭제(game.removeSprite)
-
+        super().move                        # move 상속
+        if self.y < -50:                   # 포탄이 화면을 벗어날 경우(y<-50) Sprite 삭제(game.removeSprite)
+            self.game.removeSprite(self)
 
     # 충돌을 처리한다. 포탄과 외계인 우주선 객체를 모두 리스트에서 삭제한다.
     def handleCollision(self, other):
-        # other의 자료형이 AlienSprite일 때, 둘다 삭제할 것(removeSprite())
-'''
+        if type(other) is AlienSprite:          # other의 자료형이 AlienSprite일 때, 둘다 삭제할 것(removeSprite())
+            self.game.removeSprite(other)
+            self.game.removeSprite(self)
 
 # 갤러그 게임을 나타내는 클래스
-'''
+
 class GalagaGame():
     # "이벤트" 관련 매서드들
     ## ↑ 화살표 키 이벤트 처리
     def keyUp(self, event):
-        # startship의 dy값 -10으로 설정
+        self.starship.setDy = -10          # startship의 dy값 -10으로 설정
 
     ## ↓ 화살표 키 이벤트 처리
     def keyDown(self, event):
-        # startship의 dy값 +10으로 설정
+        self.starship.setDy = 10           # startship의 dy값 +10으로 설정
 
     ## ← 화살표 키 이벤트 처리
     def keyLeft(self, event):
-        # startship의 dx값 -10으로 설정
+        self.starship.setDx = -10          # startship의 dx값 -10으로 설정
 
     ## → 화살표 키 이벤트 처리
     def keyRight(self, event):
-        # startship의 dx값 +10으로 설정
+        self.starship.setDx = 10           # startship의 dx값 +10으로 설정
 
     ## 스페이스 키 이벤트를 처리
     def keySpace(self, event):
-        # 포탄발사 메서드 (self.fire) 호출
+        self.fire()                        # 포탄발사 메서드 (self.fire) 호출
 
     ## ESC 키 이벤트를 처리
     def keyESC(self, event):
-        # Tk() 화면이 꺼지도록 설정(.destroy() 활용)
+        self.master.destroy()              # Tk() 화면이 꺼지도록 설정(.destroy() 활용)
 
     # initSprites 메서드: 게임에 필요한 스프라이트를 생성
     def initSprites(self):
-        # self.startship 객채 생성
-        # self.sprites 리스트에 starship 추가
-
-        # 에어리언 추가 (12x2 만큼 외계인 객체 생성)
+        starship = StarShipSprite(self, self.starshipimage, 370, 520)        # self.startship 객채 생성
+        self.sprites.append(starship)                                        # self.sprites 리스트에 starship 추가
+        for x in range (0,12):
+            for y in range(0,2):
+                alien = AlienSprite(self, self.alienimage, 100 + x*50, 50 + y*30)   # 에어리언 추가 (12x2 만큼 외계인 객체 생성)
+                self.sprites.append(alien)
 
 
 
@@ -280,4 +280,3 @@ if __name__ == "__main__":
     # GalagaGame 객체 생성
     # gameLoop() 함수를 호출
     # mainloop()
-'''
