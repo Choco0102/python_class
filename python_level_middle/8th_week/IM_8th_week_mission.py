@@ -145,7 +145,7 @@ class AlienSprite(Sprite):
 
 # class ShotSprite
 # : 포탄을 나타내는 클래스
-class ShotSprite():
+class ShotSprite(Sprite):
     def __init__(self, game, image, x, y):
         super().__init__(image, x, y)       # 상속
         self.game = game                    # game
@@ -193,19 +193,19 @@ class GalagaGame():
 
     # initSprites 메서드: 게임에 필요한 스프라이트를 생성
     def initSprites(self):
-        starship = StarShipSprite(self, self.starshipimage, 370, 520)   # self.startship 객채 생성
-        self.sprites.append(starship)       # self.sprites 리스트에 starship 추가
+        self.starship = StarShipSprite(self, self.shipImage, 370, 520)   # self.startship 객채 생성
+        self.sprites.append(self.starship)       # self.sprites 리스트에 starship 추가
         for x in range(12):
             for y in range(2):
-                alien = AlienSprite(self, self.alienimage, 100+x*50, 50+y*30)   # 에어리언 추가 (12x2 만큼 외계인 객체 생성)
+                alien = AlienSprite(self, self.alienImage, 100+x*50, 50+y*30)   # 에어리언 추가 (12x2 만큼 외계인 객체 생성)
                 self.sprites.append(alien)
 
     # __init__(): 생성자 메서드
-    def __init__(self, master):
+    def __init__(self, master):         #Tk() 객체가 master로 바뀌게 된다.(280번 언저리 확인)
         # 객체 생성
         self.master = master
         self.sprites = []
-        self.canvas = Canvas(master, with=800, height=600)
+        self.canvas = Canvas(master, width=800, height=600)
         self.canvas.pack()
 
         # 이미지 생성
@@ -221,7 +221,7 @@ class GalagaGame():
         master.bind("<Right>", self.keyRight)
         master.bind("<Left>", self.keyLeft)
         master.bind("<space>", self.keySpace)
-        master.bind("<Escape>", self.keyEsc)
+        master.bind("<Escape>", self.keyESC)
         master.bind("<Return>", self.startGame)
 
     # startGame() 메서드: 게임시작 메서드(Enter키의 이벤트 핸들러)
@@ -242,44 +242,45 @@ class GalagaGame():
 
     # fire() 메서드: 포탄 발사
     def fire(self):
-        self.shot = ShotSprite(self, Image=self.ShotImage, self.starship.get.x +20, self.starship.get.y -30)    # 포탄 객체 shot 생성
+        self.shot = ShotSprite(self, self.ShotImage, self.starship.get.x() +20, self.starship.get.y() -30)    # 포탄 객체 shot 생성
         self.sprites.append(self.shot)          # sprites 객체에 추가하기
 
     # paint() 메서드: 화면 그리기
     def paint(self):
-        self.master.delete(ALL)     # 캔버스 내용을 전체 지우기
         self.canvas.create_rectangle(0,0,800,600, fill="black")     # 검은 화면 생성(Canvas 객체_
         for sprite in self.sprites:     # 반복문을 활용하여 sprites의 객체들 그리기
-            sprite.draw()               # .draw 명령 실행
+            sprite.draw(self.canvas)               # .draw 명령 실행
+
 
     # gameLoop() 메서드: 게임 루프
     def gameLoop(self):
         # 1. 스프라이트들이 움직이도록 설정(move)
-
+        for sprite in self.sprites:
+            sprite.move()
 
 
         # 2. 스프라이트 리스트 안의 객체끼리의 충돌을 검사한다.(collision)
-
-
-
-
+        for me in self.sprites:
+            for other in self.sprites:
+                if me != other:
+                    if me.checkCollision(other):
+                        me.handleCollision(other)
+                        other.handleCollision(me)
 
 
 
 
         # 3. 배경그리기(paint // gameloop가 실행될 때마다 그려 마치 움직이는 것처럼 보이게 함.)
-
+        self.paint()
 
         # 4. 게임 동작 여부를 확인하여 True일때, 10ms 간격으로 self.gameLoop를 실행시킨다.(gameLoop)
-        # 만약, 게임 실행여부가 True라면
-            # gameLoop를 10ms 후에 실행 (※ after 명령: 일정 시간이 지난 후에 특정 함수 또는 메서드를 실행시킨다.)
+        while self.running == True:                                       # 만약, 게임 실행여부가 True라면
+            self.master.after(10, self.gameLoop())                     # gameLoop를 10ms 후에 실행 (※ after 명령: 일정 시간이 지난 후에 특정 함수 또는 메서드를 실행시킨다.)
 
 
 if __name__ == "__main__":
-    # Tk() 객체 생성
-    # 제목 설정
-    # GalagaGame 객체 생성
-    # gameLoop() 함수를 호출
-    # mainloop()
-
-
+    root = Tk()                         # Tk() 객체 생성
+    root.title("Gallaga 힘들었다..;;재미있었고 다시는 보지 말자.. 라고 할뻔")   # 제목 설정
+    g = GalagaGame(root)                # GalagaGame 객체 생성
+    g.gameLoop()                        # gameLoop() 함수를 호출
+    root.mainloop()                     # mainloop()
